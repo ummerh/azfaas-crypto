@@ -33,6 +33,7 @@ import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyEncryptorBuilder;
  * <p>
  * Where identity is the name to be associated with the public key. The keys are
  * placed in the files pub.[asc|bpg] and secret.[asc|bpg].
+ * 
  * @link https://github.com/bcgit/bc-java/tree/master/pg/src/main/java/org/bouncycastle/openpgp/examples
  * 
  */
@@ -86,13 +87,13 @@ public class RSAKeyPairGenerator {
 				System.exit(0);
 			}
 
-			FileOutputStream out1 = new FileOutputStream("C:\\Harsha\\bouncy\\secret.asc");
-			FileOutputStream out2 = new FileOutputStream("C:\\Harsha\\bouncy\\public.asc");
+			FileOutputStream out1 = new FileOutputStream("secret.asc");
+			FileOutputStream out2 = new FileOutputStream("public.asc");
 
 			exportKeyPair(out1, out2, kp, args[1], args[2].toCharArray(), true);
 		} else {
-			FileOutputStream out1 = new FileOutputStream("C:\\Harsha\\bouncy\\secret.bpg");
-			FileOutputStream out2 = new FileOutputStream("C:\\Harsha\\bouncy\\public.bpg");
+			FileOutputStream out1 = new FileOutputStream("secret.bpg");
+			FileOutputStream out2 = new FileOutputStream("public.bpg");
 
 			exportKeyPair(out1, out2, kp, args[0], args[1].toCharArray(), false);
 		}
