@@ -2,7 +2,6 @@ package com.jet.demo.data.security.pgp;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.io.OutputStream;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.Date;
 import java.util.Iterator;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
@@ -23,7 +21,6 @@ import org.bouncycastle.openpgp.PGPEncryptedDataGenerator;
 import org.bouncycastle.openpgp.PGPEncryptedDataList;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPLiteralData;
-import org.bouncycastle.openpgp.PGPLiteralDataGenerator;
 import org.bouncycastle.openpgp.PGPOnePassSignatureList;
 import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPPublicKey;
@@ -191,33 +188,6 @@ public class KeyBasedFileProcessor {
 			if (e.getUnderlyingException() != null) {
 				e.getUnderlyingException().printStackTrace();
 			}
-		}
-	}
-
-	protected static void encryptBytes(OutputStream out, String fileName, byte[] bytes, PGPPublicKey encKey,
-			boolean armor, boolean withIntegrityCheck) throws Exception {
-		if (armor) {
-			out = new ArmoredOutputStream(out);
-		}
-
-		PGPLiteralDataGenerator lData = new PGPLiteralDataGenerator();
-		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-		OutputStream pOut = lData.open(bOut, PGPLiteralData.BINARY, fileName, new Date(System.currentTimeMillis()),
-				bytes);
-		pOut.write(bytes, 0, bytes.length);
-		pOut.close();
-
-		PGPEncryptedDataGenerator encGen = new PGPEncryptedDataGenerator(
-				new JcePGPDataEncryptorBuilder(PGPEncryptedData.CAST5).setWithIntegrityPacket(withIntegrityCheck)
-						.setSecureRandom(new SecureRandom()).setProvider("BC"));
-		encGen.addMethod(new JcePublicKeyKeyEncryptionMethodGenerator(encKey).setProvider("BC"));
-
-		byte[] byteArray = bOut.toByteArray();
-		OutputStream cOut = encGen.open(out, byteArray.length);
-		cOut.write(byteArray);
-		cOut.close();
-		if (armor) {
-			out.close();
 		}
 	}
 

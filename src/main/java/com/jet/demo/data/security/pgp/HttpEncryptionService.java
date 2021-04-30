@@ -2,9 +2,12 @@ package com.jet.demo.data.security.pgp;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Level;
 
+import org.apache.commons.io.FileUtils;
 import org.bouncycastle.openpgp.PGPPublicKey;
 
 import com.azure.identity.DefaultAzureCredentialBuilder;
@@ -51,7 +54,9 @@ public class HttpEncryptionService {
 			KeyVaultSecret publicKey = secretClient.getSecret("default_pgp_public_key");
 			PGPPublicKey pgpKey = PGPHelperUtil
 					.readPublicKey(new ByteArrayInputStream(publicKey.getValue().getBytes()));
-			KeyBasedFileProcessor.encryptBytes(bos, "encryptedBlob", content, pgpKey, true, true);
+			String fileName = UUID.randomUUID().toString();
+			FileUtils.writeByteArrayToFile(new File(fileName), content);
+			KeyBasedFileProcessor.encryptFile(bos, fileName, pgpKey, true, true);
 			outputItem.setValue(bos.toString());
 		} catch (Exception e) {
 			String errMessage = "Failed encrypting file \"" + request.getQueryParameters().get("inputPath")

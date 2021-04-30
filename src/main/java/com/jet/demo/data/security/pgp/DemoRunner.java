@@ -18,10 +18,8 @@ public class DemoRunner {
 			Security.addProvider(new BouncyCastleProvider());
 
 			PGPPublicKey pgpKey = PGPHelperUtil.readPublicKey("public.bpg");
-
-			KeyBasedFileProcessor.encryptBytes(new FileOutputStream("sample-data.bpg"), "sample-data.bpg",
-					"This is dummy data".getBytes(), pgpKey, true, true);
-
+			KeyBasedFileProcessor.encryptFile(new FileOutputStream("sample-data.bpg"), "sample-data.txt", pgpKey, true,
+					true);
 			KeyBasedFileProcessor.decryptBytes(new FileInputStream("sample-data.bpg"),
 					new FileInputStream("secret.bpg"), "changeit".toCharArray(),
 					new FileOutputStream("sample-data.out"));
@@ -29,6 +27,7 @@ public class DemoRunner {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		testBpg();
 	}
 
 	private static void testBpg() {
@@ -38,11 +37,11 @@ public class DemoRunner {
 			PGPPublicKey pgpKey = PGPHelperUtil
 					.readPublicKey(new ByteArrayInputStream(FileUtils.readFileToByteArray(new File("public.bpg"))));
 			byte[] secretKeyBytes = FileUtils.readFileToByteArray(new File("secret.bpg"));
+
 			char[] password = "changeit".toCharArray();
-			byte[] inputBytes = "what is this".getBytes();
 
 			ByteArrayOutputStream outOs = new ByteArrayOutputStream();
-			KeyBasedFileProcessor.encryptBytes(outOs, "sample-data.bpg", inputBytes, pgpKey, true, true);
+			KeyBasedFileProcessor.encryptFile(outOs, "sample-data.txt", pgpKey, true, true);
 
 			ByteArrayInputStream encodedIs = new ByteArrayInputStream(outOs.toByteArray());
 
